@@ -7,7 +7,8 @@ import { useState } from "react"
 import { LayerDirective, LayersDirective, MapsComponent } from "@syncfusion/ej2-react-maps"
 import { world_map } from "~/constants/world_map"
 import { ButtonComponent } from "@syncfusion/ej2-react-buttons"
-import { load } from "@syncfusion/ej2-react-charts"
+import { account } from "~/appwrite/client"
+import { useNavigate } from "react-router"
 
 export const loader = async () => {
     const response = await fetch('https://restcountries.com/v3.1/all')
@@ -22,7 +23,10 @@ export const loader = async () => {
     ));
 }
 
+
 const createTrip = ({ loaderData }: Route.ComponentProps) => {
+
+    const navigate = useNavigate()
 
     const countries = loaderData as unknown as Country[]
 
@@ -56,6 +60,41 @@ const createTrip = ({ loaderData }: Route.ComponentProps) => {
             !formData.groupType
         ) {
             setError('please provide values for all fields')
+            setLoading(false)
+            return;
+        }
+        if (formData.duration < 1 || formData.duration > 10) {
+            setError('Duration must be between 1 and 10')
+            setLoading(false)
+            return;
+        }
+        const user = await account.get();
+        if (!user.$id) {
+            console.error('user not authenticated')
+            setLoading(false)
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/createTrip', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    country: formData.country,
+                    numberOfDays: formData.duration,
+                    travelStyle: formData.travelStyle,
+                    interests: formData.interest,
+                    budget: formData.budget,
+                    groupType: formData.groupType,
+                    userId: user.$id
+                })
+            })
+            const result: CreateTripResponse = await response.json()
+            if (result?.id) navigate(`/trips/${result.id}`)
+            else console.error('Failed to generate trip')
+        } catch (error) {
+            console.error(error);
+        } finally {
             setLoading(false)
         }
     }
