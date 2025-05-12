@@ -147,7 +147,7 @@ const tripDetail = ({ loaderData }: Route.ComponentProps) => {
                     {allTrips.map((trip) => (
                         <TripCard id={trip.id}
                             name={trip.name}
-                            location={itinerary?.[0].location ?? ''}
+                            location={trip.itinerary?.[0].location ?? ''}
                             imageUrl={trip.imageUrls[0]}
                             tags={[trip.interests, trip.travelStyle]}
                             price={trip.estimatedPrice}
