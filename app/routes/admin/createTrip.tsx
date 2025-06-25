@@ -11,8 +11,10 @@ import { account } from "~/appwrite/client"
 import { useNavigate } from "react-router"
 
 export const loader = async () => {
-    const response = await fetch('https://restcountries.com/v3.1/all')
+    const response = await fetch('https://restcountries.com/v3.1/all?fields=flag,name,latlng,maps')
     const data = await response.json()
+    console.log(data);
+
     return data.map((country: any) => (
         {
             name: country.flag + country.name.common,
@@ -24,7 +26,7 @@ export const loader = async () => {
 }
 
 
-const createTrip = ({ loaderData }: Route.ComponentProps) => {
+const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
 
     const navigate = useNavigate()
 
@@ -212,4 +214,4 @@ const createTrip = ({ loaderData }: Route.ComponentProps) => {
     )
 }
 
-export default createTrip
+export default CreateTrip

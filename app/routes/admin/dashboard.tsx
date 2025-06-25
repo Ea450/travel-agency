@@ -62,7 +62,7 @@ const dashboard = ({ loaderData }: Route.ComponentProps) => {
         {
             title: 'Latest user signups',
             dataSource: allTrips,
-            field: `interest`,
+            field: `interests`,
             headerText: 'Interersts'
         },
     ]
@@ -170,9 +170,16 @@ const dashboard = ({ loaderData }: Route.ComponentProps) => {
                                     headerText="Name"
                                     width="200"
                                     textAlign="Left"
-                                    template={(props: UserData) => (
+                                    template={(props: any) => (
                                         <div className="flex items-center gap-1.5 px-4">
-                                            <img src={props.imageUrl} alt="user" className="rounded-full size-8 aspect-square" referrerPolicy="no-referrer" />
+                                            {props.imageUrl || props.imageUrls?.[0] ? (
+                                                <img
+                                                    src={props.imageUrl || props.imageUrls?.[0]}
+                                                    alt="user"
+                                                    className="rounded-full size-8 aspect-square"
+                                                    referrerPolicy="no-referrer"
+                                                />
+                                            ) : null}
                                             <span>{props.name}</span>
                                         </div>
                                     )}
